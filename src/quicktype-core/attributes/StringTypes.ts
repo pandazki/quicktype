@@ -183,6 +183,13 @@ function isUUID(s: string): boolean {
     return s.match(UUID) !== null;
 }
 
+const COLOR_HEX = /^#[0-9a-fA-F]{6}$/;
+
+function isColorHex(s: string): boolean {
+    console.log(s + " isColorHex: ", s.match(COLOR_HEX) !== null);
+    return s.match(COLOR_HEX) !== null;
+}
+
 // FIXME: This is obviously not a complete URI regex.  The exclusion of
 // `{}` is a hack to make `github-events.json` work, which contains URLs
 // with those characters which ajv refuses to accept as `uri`.
@@ -203,7 +210,8 @@ export function inferTransformedStringTypeKindForString(
     s: string,
     recognizer: DateTimeRecognizer
 ): TransformedStringTypeKind | undefined {
-    if (s.length === 0 || "0123456789-abcdefth".indexOf(s[0]) < 0) return undefined;
+    console.log("inferTransformedStringTypeKindForString: ", s);
+    if (s.length === 0 || "0123456789-abcdefth#".indexOf(s[0]) < 0) return undefined;
 
     if (recognizer.isDate(s)) {
         return "date";
@@ -219,6 +227,8 @@ export function inferTransformedStringTypeKindForString(
         return "uuid";
     } else if (isURI(s)) {
         return "uri";
+    } else if (isColorHex(s)) {
+        return "color-hex";
     }
     return undefined;
 }
